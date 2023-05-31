@@ -1,0 +1,8 @@
+python manage.py runserver 192.168.1.16:8000
+python -m pip install djangorestframework 
+
+python manage.py makemigrations 
+python manage.py migrate 
+python manage.py createsuperuser
+
+docker run --name mesi -p 8000:8000 myepoc
