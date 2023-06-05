@@ -16,13 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
-
-admin.site.site_header = "Portal Temperatura"
-admin.site.site_title = "Portal Temperatura"
-admin.site.index_title = "Bienvenido al sistema de resgistro de temperatura "
+admin.site.site_header = "Portal SPO2"
+admin.site.site_title = "Portal SPO2"
+admin.site.index_title = "Bienvenido al sistema de registro de SPO2 "
 
 urlpatterns = [
     path('epoc/', include('epoc_app.urls')),
+    path('signup/', include('accounts.urls'), name='signup'),
+    path("accounts/", include("django.contrib.auth.urls")),
     path('admin/', admin.site.urls),
+    #Propiedad intelectual de grupo2 de proyecto 1 conformado por: Mauricio (20200392), et al.
+    path("", TemplateView.as_view(template_name="home.html"), name="home"),
 ]

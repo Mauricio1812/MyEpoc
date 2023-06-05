@@ -119,3 +119,7 @@ def Temp_serializer_agregar_data(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 ##################################################################
+
+
+def index(request):
+    return render(request, 'index.html')
