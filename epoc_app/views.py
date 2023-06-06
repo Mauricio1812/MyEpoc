@@ -120,6 +120,24 @@ def Temp_serializer_agregar_data(request):
         return JsonResponse(serializer.errors, status=400)
 ##################################################################
 
+from datetime import timedelta
+def temp_chart(request):
+    #ahora= datetime.now()
+    #ahora = P_info.objects.order_by('-date')[0]
+    labels = []
+    data = []
+    #ultima_hora = ahora-timedelta(hours=1)
+    queryset = P_info.objects.order_by('-date')[:30] #Sale al reves
+    #queryset = P_info.objects.all().filter(ultima_hora, ahora)
+    for entry in queryset:
+        labels.append(str(entry.date.strftime("%m-%d %H:%M")))
+        data.append(entry.temperature)
+    
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
+
 
 def index(request):
     return render(request, 'index.html')
