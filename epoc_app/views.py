@@ -129,7 +129,7 @@ def temp_chart(request):
     #ultima_hora = ahora-timedelta(hours=1)
     queryset = P_info.objects.order_by('-date')[:30] #Sale al reves
     #queryset = P_info.objects.all().filter(ultima_hora, ahora)
-    for entry in queryset:
+    for entry in reversed(queryset):
         labels.append(str(entry.date.strftime("%m-%d %H:%M")))
         data.append(entry.temperature)
     
