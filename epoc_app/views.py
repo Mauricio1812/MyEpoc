@@ -52,43 +52,6 @@ class TableView(tables.SingleTableView):
    queryset = P_info.objects.all()
    template_name = "Patient_table.html"
 
-###############################
-def grafico_hora(request):
-
-    ahora= datetime.now()
-    data = []
-    labels =[]
-    titulo= "Ultimos 60 segundos"
-    #min = []
-    #max = []
-    #avg = []
-    ultima_hora = ahora-timedelta(minutes=1)
-    queryset = T_Vs_t.objects.filter(FECHA__range=(ultima_hora,ahora))
-    #queryset = T_Vs_t.objects.all()[:1440] #1440 pts son las ultimas 24 hrs, considerando que la info se registra cada un min
-
-    for maumau in queryset:
-        data.append(maumau.TEMPERATURA)
-        labels.append(str(maumau.FECHA.strftime("%Y-%m-%d %H:%M")))
-        min= queryset.aggregate(Min("TEMPERATURA"))
-        min = str(min)
-        min = min[21:25]
-        avg= queryset.aggregate(Avg("TEMPERATURA"))
-        avg = str(avg)
-        avg = avg[21:25]
-        max= queryset.aggregate(Max("TEMPERATURA"))
-        max = str(max)
-        max = max[21:25]
-        count= queryset.count()
-        opcount = 60
-
-
-
-
-    return render(request, 'grafico.html', {'labels': labels,'data': data, "min":min, "avg": avg, "max":max, "titulo":titulo, "count": count, "opcount": opcount})
-
-
-################################
-
 ################################FUNCIONA
 
 from django.http import HttpResponse, JsonResponse
@@ -140,4 +103,14 @@ def temp_chart(request):
 
 
 def index(request):
-    return render(request, 'index.html')
+    if request.method == 'POST':
+        form = CommandForm(request.POST)
+        if form.is_valid():
+            patient = form.cleaned_data['patient']
+            airflow = form.cleaned_data['airflow']
+            model = P_command(name=patient, oxygenflow=airflow)
+            model.save()
+    else:
+        form = CommandForm()
+
+    return render(request, 'index.html', {'form': form})
