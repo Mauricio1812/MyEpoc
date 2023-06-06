@@ -35,20 +35,6 @@
                                                 <label for="inputPassword">Contraseña</label>
                                             </div>
 
-                                            {% with WIDGET_ERROR_CLASS='my_error_class' %}
-                                            {% render_field form.password1 %}
-                                            {% render_field form.password2 %}
-                                            {% render_field form.first_name %}
-                                            {% endwith %}
-
-                                            {% if field.errors %}
-                                                {% for error in field.errors %}
-                                                    <div class="invalid-feedback">
-                                                        {{error}}
-                                                    </div>
-                                                {% endfor %} 
-                                            {% endif %}
-
                                             <p></p>
                                             <button type="submit">Iniciar sesión</button>
                                             <input type="hidden" name="next" value="{{ next }}">

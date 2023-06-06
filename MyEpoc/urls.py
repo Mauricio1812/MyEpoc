@@ -27,6 +27,5 @@ urlpatterns = [
     path('signup/', include('accounts.urls'), name='signup'),
     path("accounts/", include("django.contrib.auth.urls")),
     path('admin/', admin.site.urls),
-    #Propiedad intelectual de grupo2 de proyecto 1 conformado por: Mauricio (20200392), et al.
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
 ]
