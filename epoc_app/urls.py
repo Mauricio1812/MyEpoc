@@ -10,5 +10,5 @@ urlpatterns = [
     path('commands',views.command, name='command'),
     path('command_data',command_serializer, name='Command_list'),
     path('temp-chart/', views.temp_chart, name='temp-chart'),
-     #path('',index,name='Index')
+    path('index/',index,name='Index')
 ]
