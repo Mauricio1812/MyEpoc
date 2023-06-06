@@ -101,7 +101,9 @@ def temp_chart(request):
         'data': data,
     })
 
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def index(request):
     if request.method == 'POST':
         form = CommandForm(request.POST)
