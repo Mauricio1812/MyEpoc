@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+   {% if user.is_authenticated %}
     <head>
         {% load static %}
         <meta charset="utf-8" />
@@ -37,7 +38,7 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Menu</div>
-                            <a class="nav-link" href="{% url 'Index' %}">
+                            <a class="nav-link" href="{% url 'home' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Monitoreo del paciente
                             </a>
@@ -51,16 +52,16 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Usuario:</div>
-                        USUARIO123
+                        {{ user.username }}
                     </div>
                 </nav>
             </div>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
+                        <h1 class="mt-4">Tablero</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Diego Salvatierra</li>
+                            <li class="breadcrumb-item active">Vista general</li>
                         </ol>
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
@@ -138,7 +139,7 @@
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                            <div class="text-muted">Copyright &copy; My Epoc 2023</div>
                             <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;
@@ -202,4 +203,8 @@
             });
         </script>
     </body>
+    {% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Log In</a>
+    {% endif %}
 </html>
