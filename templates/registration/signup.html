@@ -23,53 +23,25 @@
                                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Crear una cuenta</h3></div>
                                     <div class="card-body">
 
-                                        <!--<form method="post">
-                                            {% csrf_token %}
-                                            {{ form.as_p }}
-                                            <button type="submit" >Submit</button>
-                                        </form>//-->
-
-
                                         <form method="post">
                                             {% csrf_token %}
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        {% render_field form.first_name placeholder="Nombre" class="form-control" type="text" %}
-                                                        <label for="inputFirstName">Nombre</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        {% render_field form.last_name placeholder="Apellidos" class="form-control" type="text" %}
-                                                        <label for="inputLastName">Apellidos</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                {% render_field form.email placeholder="Email" class="form-control" type="text" %}
-                                                <label for="inputLastName">Correo</label>                                                
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        {% render_field form.password1 placeholder="Password1" class="form-control" type="text" %}
-                                                        <label for="inputPassword">Contraseña</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating mb-3 mb-md-0" >
-                                                        {% render_field form.password2 placeholder="Password2" class="form-control" type="text" %}
-                                                        <label for="inputPasswordConfirm">Confirmar contraseña</label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {% for field in form %}
+                                              <p>
+                                                {{ field.label_tag }}<br>
+                                                {{ field }}
+                                                {% if field.help_text %}
+                                                  <p></p>
+                                                  <small style="color: grey">{{ field.help_text }}</small>
+                                                {% endif %}
+                                                {% for error in field.errors %}
+                                                  <p style="color: red">{{ error }}</p>
+                                                {% endfor %}
+                                              </p>
+                                            {% endfor %}
                                             <div class="mt-4 mb-0" style="text-align: center;">
                                                 <button class="btn btn-primary btn-block" type="submit">Crear cuenta</button>
                                             </div>
-                                        </form>
-
-
+                                          </form>
 
                                     </div>
                                     <div class="card-footer text-center py-3">
