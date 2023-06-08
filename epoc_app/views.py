@@ -115,4 +115,6 @@ def index(request):
     else:
         form = CommandForm()
 
-    return render(request, 'index.html', {'form': form})
+    command_d = P_command.objects.last()
+    spo2_d = P_info.objects.last()
+    return render(request, 'index.html', {'form': form, 'command': command_d, 'spo2': spo2_d})

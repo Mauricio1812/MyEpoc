@@ -65,8 +65,16 @@
                         </ol>
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
+                                <div class="card bg-secondary text-white mb-4">
+                                    <div class="card-body" style="font-size: 30px";>NOMBRE</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link">Paciente</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>80%</div>
+                                    <div class="card-body" style="font-size: 30px";>{{spo2.temperature}}%</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link">SpO2</a>
                                     </div>
@@ -74,27 +82,29 @@
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-success text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>5 L/min</div>
+                                    <div class="card-body" style="font-size: 30px";>{{command.oxygenflow}} L/min</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link">Flujo</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>SpO2 bajo</div>
+                                {% if command.oxygenflow > 90 and command.oxygenflow < 110 %}
+                                <!-- Cambiar a spo2.temperature para final -->
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body" style="font-size: 30px";>SpO2 Ok</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link">Alertas</a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>Voltaje inestable</div>
+                                {% else %}
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body" style="font-size: 30px";>Peligro: SpO2</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link">Peligros</a>
+                                        <a class="small text-white stretched-link">Alertas</a>
                                     </div>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="row">
@@ -119,6 +129,12 @@
                                     </div>
                                     <div class="card-body">
                                         <!-- <canvas id="myBarChart" width="100%" height="40"></canvas> -->
+                                        <!-- <h1>{{ user.groups.all.0 }}</h1> -->
+                                        {% if user.groups.all.0.name == 'Pacientes' %}
+                                        <ol class="breadcrumb mb-4">
+                                            <li class="breadcrumb-item active">Acceso restringido</li>
+                                        </ol>
+                                        {% else %}
                                         <form method="post">
                                             {% csrf_token %}
                                             {{ form.patient.label_tag }} {{ form.patient }}
@@ -130,6 +146,7 @@
                                             <p></p>
                                             <button type="submit">Submit</button>
                                         </form>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
