@@ -9,5 +9,5 @@ urlpatterns = [
     path('commands',views.command, name='command'),
     path('command_data',command_serializer, name='Command_list'),
     path('temp-chart/', views.temp_chart, name='temp-chart'),
-    path('index/',index,name='home')
+    #path('index/',index,name='home')
 ]
