@@ -1,30 +1,18 @@
 from rest_framework import serializers
-from .models import T_Vs_t, P_info, P_command
+from .models import Patient, P_info, P_command
 
 class Patient_serializer(serializers.ModelSerializer): #POST (ESP32)
 
     class Meta:
         model = P_info
-        fields=["name", "humidity", "temperature"]
+        fields=["name", "spo2"]
 
 class Patient_serializer2(serializers.ModelSerializer):
     class Meta:
         model = P_info
-        fields=["name", "humidity", "temperature", "date"]
+        fields=["name", "spo2", "date"]
 
-# class Command_serializer2(serializers.ModelSerializer):
-#     class Meta:
-#         model = P_command
-#         fields=["name", "oxygenflow", 'date']
-
-class Temp_serializer(serializers.ModelSerializer):# GET
-
+class P_serializer(serializers.ModelSerializer):
     class Meta:
-        model = T_Vs_t
-        fields =["TEMPERATURA"]
-
-class Temp_serializer2(serializers.ModelSerializer):# GET
-
-    class Meta:
-        model = T_Vs_t
-        fields =["TEMPERATURA", "FECHA"]
+        model = Patient
+        fields=["name", "spo2", "command", "date"]

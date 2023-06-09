@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-   {% if user.is_authenticated %}
     <head>
         {% load static %}
         <meta charset="utf-8" />
@@ -43,8 +42,8 @@
                                 Monitoreo del paciente
                             </a>
                             
-                            <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="tables.html">
+                            <div class="sb-sidenav-menu-heading">Extra</div>
+                            <a class="nav-link" href="{% url 'monitor' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Pacientes
                             </a>
@@ -74,7 +73,7 @@
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>{{spo2.temperature}}%</div>
+                                    <div class="card-body" style="font-size: 30px";>{{spo2.spo2}}%</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link">SpO2</a>
                                     </div>
@@ -82,14 +81,14 @@
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-success text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>{{command.oxygenflow}} L/min</div>
+                                    <div class="card-body" style="font-size: 30px";>{{command.flow}} L/min</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link">Flujo</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
-                                {% if command.oxygenflow > 90 and command.oxygenflow < 110 %}
+                                {% if command.flow > 90 and command.flow < 110 %}
                                 <!-- Cambiar a spo2.temperature para final -->
                                 <div class="card bg-primary text-white mb-4">
                                     <div class="card-body" style="font-size: 30px";>SpO2 Ok</div>
@@ -140,8 +139,8 @@
                                             {{ form.patient.label_tag }} {{ form.patient }}
                                             {{ form.patient.errors }}
                                             <br>
-                                            {{ form.airflow.label_tag }} {{ form.airflow }}
-                                            {{ form.airflow.errors }}
+                                            {{ form.flow.label_tag }} {{ form.flow }}
+                                            {{ form.flow.errors }}
                                             <br>
                                             <p></p>
                                             <button type="submit">Submit</button>
@@ -220,8 +219,4 @@
             });
         </script>
     </body>
-    {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">Log In</a>
-    {% endif %}
 </html>

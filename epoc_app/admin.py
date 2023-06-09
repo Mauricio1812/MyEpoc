@@ -1,4 +1,5 @@
 from django.contrib import admin
-from .models import T_Vs_t
+from .models import Patient, P_info
 
-admin.site.register(T_Vs_t)
+admin.site.register(Patient)
+admin.site.register(P_info)
