@@ -66,10 +66,15 @@ def Temp_serializer_agregar_data(request):
     
 ##################################################################
 
-def temp_chart(request): #,patient
+def temp_chart(request,patient_id):
     labels = []
     data = []
-    queryset = P_info.objects.order_by('-date')[:30] #Agregarle filtro de paciente .filter('name'=patient)
+    patient = get_object_or_404(Patient,pk=patient_id)
+    queryset = P_info.objects.filter(name=patient.name).order_by('-date') #[:30]
+    if(len(queryset)>30):
+        queryset=queryset[:30]
+    else:
+        queryset=queryset[:len(queryset)]
     for entry in reversed(queryset):
         labels.append(str(entry.date.strftime("%m-%d %H:%M")))
         data.append(entry.spo2)
@@ -79,15 +84,11 @@ def temp_chart(request): #,patient
         'data': data,
     })
 
-# def patient_table(request):
-#     labels=[]
-#     data=[]
-#     queryset=
-
 from django.contrib.auth.decorators import login_required
 
 @login_required
 def index(request):
+    patients=Patient.objects.all()
     if request.method == 'POST':
         form = CommandForm(request.POST)
         if form.is_valid():
@@ -105,11 +106,31 @@ def index(request):
 
     command_d = Patient.objects.last()
     spo2_d = P_info.objects.last()
-    return render(request, 'index.html', {'form': form, 'command': command_d, 'spo2': spo2_d})
+    return render(request, 'index.html', {'patients': patients})
+
+
+from django.shortcuts import get_object_or_404
 
 @login_required
-def monitor(request):
-    return render(request, 'monitor.html')
+def details_pat(request,patient_id):
+    
+    patient = get_object_or_404(Patient,pk=patient_id)
 
-
-
+    if request.method == 'POST':
+        form = CommandForm(request.POST)
+        if form.is_valid():
+            patient = form.cleaned_data['patient']
+            flow = form.cleaned_data['flow']
+            patient, created = Patient.objects.get_or_create(
+                name=patient, defaults={"name": patient, "spo2": 95, "flow": flow})
+            if created==False:
+                ahora= datetime.now()
+                patient.date=ahora
+                patient.flow = flow
+                patient.save(update_fields=["flow","date"]) 
+    else:
+        form = CommandForm()
+        
+    command_d = Patient.objects.filter(name=patient.name).last()
+    spo2_d = P_info.objects.filter(name=patient.name).last()
+    return render(request, 'pat_details.html', {'form': form, 'command': command_d, 'spo2': spo2_d, 'patient':patient})
