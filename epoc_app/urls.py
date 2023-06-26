@@ -10,5 +10,7 @@ urlpatterns = [
     path('command_data',command_serializer, name='Command_list'),
     re_path(r'^temp-chart/(?P<patient_id>[0-9]+)/$', views.temp_chart, name='temp-chart'),
     re_path(r'^(?P<patient_id>[0-9]+)/$', views.details_pat, name='detail'),
+    path('dashboard/<patient_name>', views.dashboard, name='dash')
     #path('index/',index,name='home')
+
 ]

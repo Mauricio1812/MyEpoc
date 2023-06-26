@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block scripts %}
+    <script src="{% static 'js/dashboard.js' %}" defer></script>
+{% endblock scripts%}
+
+{% block content%}
+<p id="app">{{ text }}</p>
+{% endblock content %}

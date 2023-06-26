@@ -134,3 +134,7 @@ def details_pat(request,patient_id):
     command_d = Patient.objects.filter(name=patient.name).last()
     spo2_d = P_info.objects.filter(name=patient.name).last()
     return render(request, 'pat_details.html', {'form': form, 'command': command_d, 'spo2': spo2_d, 'patient':patient})
+
+
+def dashboard(request, patient_name): #(request, slug):
+    return render(request, 'dashboard.html', {"patient": patient_name})
