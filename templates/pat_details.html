@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         {% load static %}
-        <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+        <link rel="shortcut icon" type="image/png" href="{% static 'icon.ico' %}"/>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -83,22 +83,12 @@
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
-                                {% if spo2.spo2 > 90 and spo2.spo2 < 110 %}
-                                <!-- Cambiar a spo2.temperature para final -->
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>SpO2 Ok</div>
+                                <div id='alert-color' class="card bg-primary text-white mb-4">
+                                    <div id='alert-container' class="card-body" style="font-size: 30px";>No Hay</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link">Alertas</a>
                                     </div>
                                 </div>
-                                {% else %}
-                                <div class="card bg-warning text-white mb-4">
-                                    <div id='alert-container' class="card-body" style="font-size: 30px";>Peligro: SpO2</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link">Alertas</a>
-                                    </div>
-                                </div>
-                                {% endif %}
                             </div>
                         </div>
                         <div class="row">
@@ -169,12 +159,12 @@
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
         <script>  
-            var lastValue;  
-
             var interval = setInterval(function () {
+            var lastValue;
             var $tempChart = $("#temp-chart");
             var $SpoContainer = $("#spo-container");
             var $AlertContainer = $("#alert-container");
+            var $AlertColor = $("#alert-color");
             
             $.ajax({
                 url: $tempChart.data("url"),
@@ -185,9 +175,11 @@
                 
 
                 if (lastValue >= 90 && lastValue <= 100) {
-                    $AlertContainer.text("Seguro")
+                    $AlertContainer.text("Seguro");
+                    $AlertColor.removeClass("bg-danger").addClass("bg-primary");
                 } else {
-                    $AlertContainer.text("Peligro")
+                    $AlertContainer.text("Peligro: SpO2");
+                    $AlertColor.removeClass("bg-primary").addClass("bg-danger");
                 }
 
                 var ctx = $tempChart[0].getContext("2d");
