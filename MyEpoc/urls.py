@@ -25,7 +25,7 @@ admin.site.index_title = "Bienvenido al sistema de registro de SPO2 "
 
 urlpatterns = [
     path('epoc/', include('epoc_app.urls')),
-    path('signup/', include('accounts.urls'), name='signup'),
+    path('login/', include('accounts.urls'), name='login'),
     path("accounts/", include("django.contrib.auth.urls")),
     path('admin/', admin.site.urls),
     path("", index, name="home"), #Cambiar a verdadero home

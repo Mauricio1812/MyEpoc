@@ -1,12 +1,47 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 
-class SignupForm(UserCreationForm):
-    first_name = forms.CharField(max_length=100)
-    last_name = forms.CharField(max_length=100)
-    email = forms.EmailField(max_length=150)
+from .models import User
 
-    class Meta(UserCreationForm.Meta):
-        model = get_user_model()
-        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+
+class LoginForm(AuthenticationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password',)
+
+
+class AddUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'role', 'password',)
+        widgets = {
+            'email': forms.TextInput(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl border'
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl border'
+            }),
+            'role': forms.Select(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl border'
+            }),
+            'password': forms.TextInput(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl border'
+            })
+        }
+
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'role',)
+        widgets = {
+            'email': forms.TextInput(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl border'
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl border'
+            }),
+            'role': forms.Select(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl border'
+            })
+        }

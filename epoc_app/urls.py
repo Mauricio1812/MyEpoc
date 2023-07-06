@@ -1,5 +1,4 @@
 from django.urls import path
-from django.conf.urls import re_path
 from .views import index
 from .views import  Temp_serializer_agregar_data, command_serializer
 from . import views 

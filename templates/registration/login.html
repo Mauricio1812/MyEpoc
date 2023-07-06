@@ -1,79 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        {% load static %}
-        {% load widget_tweaks %}
-        <link rel="shortcut icon" type="image/png" href="{% static 'icon.ico' %}"/>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Login - My Epoc</title>
-        <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="bg-primary">
-        <div id="layoutAuthentication">
-            <div id="layoutAuthentication_content">
-                <main>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-5">
-                                <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Inicio de sesión</h3></div>
-                                    <div class="card-body">
-                                        <form method="post" action="{% url 'login' %}">
-                                            {% csrf_token %}
+{% extends 'base.html' %}
+{% load static %}
 
-                                            <div class="form-floating mb-3">
-                                            {% render_field form.username placeholder="Username" class="form-control" type="text" %}
-                                                <label for="inputEmail">Usuario</label>
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                {% render_field form.password placeholder="Password" class="form-control" type="password" %}
-                                                <label for="inputPassword">Contraseña</label>
-                                            </div>
+{% block title %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.min.css' %}">
+<title>WETMOS - Login</title>
+{% endblock %}
 
-                                            <p></p>
-                                            <button type="submit">Iniciar sesión</button>
-                                            <input type="hidden" name="next" value="{{ next }}">
-                                            {% if form.errors %}
-                                            <p class="error-message" style="color: darkred; opacity: 0.5;">Usuario o clave incorrecta.</p>
-                                            {% endif %}
-                                          </form>
+{% block content %}
+<h1 class="px-2 mb-6 text-xl">Login</h1>
 
-                                        <form>
-                                            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <p><a href="{% url 'password_reset' %}">¿Olvidó su contraseña?</a></p>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="{% url 'signup' %}">No tiene cuenta? Regístrese!</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div>
-            <div id="layoutAuthentication_footer">
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; My Epoc 2023</div>
-                            <div>
-                                <a href="#">Política de privacidad</a>
-                                &middot;
-                                <a href="#">Términos &amp; Condiciones</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-            </div>
+<form method="post" action=".">
+    {% csrf_token %}
+
+    <div class="px-2 mb-4">
+        <label for="id_email">Email</label>
+
+        <input type="email" name="username" id="id_email" class="w-full py-4 px-6 rounded-xl border">
+    </div>
+
+    <div class="px-2 mb-4">
+        <label for="id_password">Password</label>
+
+        <input type="password" name="password" id="id_password" class="w-full py-4 px-6 rounded-xl border">
+    </div>
+
+    {% if form.errors or form.non_field_errors %}
+        <div class="px-2 mb-4 p-6 bg-rose-100 rounded-xl">
+            {% for field in form %}
+                {{ field.errors }}
+            {% endfor %}
+
+            {{ form.non_field_errors }}
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="{% static 'js/scripts.js'%}"></script>
-    </body>
-</html>
+    {% endif %}
+        
+    <button class="inline-block py-2 px-6 bg-blue-600 text-white rounded-xl">Submit</button>
+</form>
+{% endblock %}

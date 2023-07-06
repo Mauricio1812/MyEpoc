@@ -26,9 +26,8 @@ SECRET_KEY = SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = ['127.0.0.1', 'localhost','192.168.1.16']
-#ALLOWED_HOSTS = ['192.168.1.17', 'localhost']
 ALLOWED_HOSTS = ['*']
+AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
 
@@ -41,8 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'epoc_app',
     "django_tables2",
-    "material_widgets",
-    'widget_tweaks',
     "rest_framework",
     "accounts"
 ]
