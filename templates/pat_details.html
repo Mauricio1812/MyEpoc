@@ -1,221 +1,158 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        {% load static %}
-        <link rel="shortcut icon" type="image/png" href="{% static 'icon.ico' %}"/>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Datos de paciente</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="{% url 'home' %}">EPOC</a>
-            <!-- Sidebar Toggle-->
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+{% extends 'base.html' %}
+{% load static %}
 
-            <ul class="navbar-nav ms-auto my-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <!-- <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                        <li><hr class="dropdown-divider" /></li> -->
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Menu</div>
-                            <a class="nav-link" href="{% url 'home' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Monitoreo de pacientes
-                            </a>
-                        </div>
-                    </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Usuario:</div>
-                        {{ user.username }}
-                    </div>
-                </nav>
-            </div>
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4">Tablero</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Vista general</li>
-                        </ol>
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-secondary text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>{{patient.name}}</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link">Paciente</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div id='spo-container' class="card-body" style="font-size: 30px";>0</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link">SpO2</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body" style="font-size: 30px";>{{command.flow}} L/min</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link">Flujo</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div id='alert-color' class="card bg-primary text-white mb-4">
-                                    <div id='alert-container' class="card-body" style="font-size: 30px";>No Hay</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link">Alertas</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        SpO2 durante el día
-                                    </div>
-                                    <div class="card-body">
-                                        <canvas id="temp-chart" data-url="{% url 'temp-chart' patient.id%}"></canvas>
-                                    </div>
-                                </div>
-                            </div>
+{% block title %}
+<title>WETMOS - Datos</title>
+{% endblock %}
 
-
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        Controlar flujo de SpO2
-                                    </div>
-                                    <div class="card-body">
-                                        <!-- <canvas id="myBarChart" width="100%" height="40"></canvas> -->
-                                        <!-- <h1>{{ user.groups.all.0 }}</h1> -->
-                                        {% if user.groups.all.0.name == 'Medicos' %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            {{ form.patient.label_tag }} {{ form.patient }}
-                                            {{ form.patient.errors }}
-                                            <br>
-                                            {{ form.flow.label_tag }} {{ form.flow }}
-                                            {{ form.flow.errors }}
-                                            <br>
-                                            <p></p>
-                                            <button type="submit">Submit</button>
-                                        </form>
-                                        {% else %}
-                                        <ol class="breadcrumb mb-4">
-                                            <li class="breadcrumb-item active">Acceso restringido</li>
-                                        </ol>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      </div>  
-                </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; My Epoc 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Patient's details</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Overview</li>
+    </ol>
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-secondary text-white mb-4">
+                <div class="card-body" style="font-size: 30px";>{{patient.name}}</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link">Patient</a>
+                </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="{% static 'js/scripts.js'%}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="{% static 'js/datatables-simple-demo.js'%}"></script>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-        <script>  
-            var interval = setInterval(function () {
-            var lastValue;
-            var $tempChart = $("#temp-chart");
-            var $SpoContainer = $("#spo-container");
-            var $AlertContainer = $("#alert-container");
-            var $AlertColor = $("#alert-color");
-            
-            $.ajax({
-                url: $tempChart.data("url"),
-                success: function (data) {
-                lastValue = data.data[data.data.length - 1];
-                console.log(lastValue);
-                $SpoContainer.text(lastValue);
-                
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div id='spo-container' class="card-body" style="font-size: 30px";>0</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link">SpO2</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body" style="font-size: 30px";>{{command.flow}} L/min</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link">Flow</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div id='alert-color' class="card bg-primary text-white mb-4">
+                <div id='alert-container' class="card-body" style="font-size: 30px";>None yet</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link">Alarms</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    SpO2 through the day
+                </div>
+                <div class="card-body">
+                    <canvas id="temp-chart" data-url="{% url 'temp-chart' patient.id%}"></canvas>
+                </div>
+            </div>
+        </div>
 
-                if (lastValue >= 90 && lastValue <= 100) {
-                    $AlertContainer.text("Seguro");
-                    $AlertColor.removeClass("bg-danger").addClass("bg-primary");
-                } else {
-                    $AlertContainer.text("Peligro: SpO2");
-                    $AlertColor.removeClass("bg-primary").addClass("bg-danger");
-                }
 
-                var ctx = $tempChart[0].getContext("2d");
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: 'SpO2',
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(2,117,216,0.2)",
-                        borderColor: "rgba(2,117,216,1)",
-                        pointRadius: 5,
-                        pointBackgroundColor: "rgba(2,117,216,1)",
-                        pointBorderColor: "rgba(255,255,255,0.8)",
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "rgba(2,117,216,1)",
-                        pointHitRadius: 50,
-                        pointBorderWidth: 2,
-                        data: data.data
-                    }]          
-                    },
-                    options: {
-                    responsive: true,
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'SpO2 del Paciente'
-                    }
-                    }
-                });
-                }
-            });
-            },8000);
-        </script>
-    </body>
-</html>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Control oxygen flow
+                </div>
+                <div class="card-body">
+                    <!-- <canvas id="myBarChart" width="100%" height="40"></canvas> -->
+                    <!-- <h1>{{ user.groups.all.0 }}</h1> -->
+                    {% if user.groups.all.0.name == 'Medicos' %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.patient.label_tag }} {{ form.patient }}
+                        {{ form.patient.errors }}
+                        <br>
+                        {{ form.flow.label_tag }} {{ form.flow }}
+                        {{ form.flow.errors }}
+                        <br>
+                        <p></p>
+                        <button type="submit">Submit</button>
+                    </form>
+                    {% else %}
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item active">Restricted access</li>
+                    </ol>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+{% endblock %}
+
+ 
+{% block scripts %}                      
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>  
+    var interval = setInterval(function () {
+    var lastValue;
+    var $tempChart = $("#temp-chart");
+    var $SpoContainer = $("#spo-container");
+    var $AlertContainer = $("#alert-container");
+    var $AlertColor = $("#alert-color");
+    
+    $.ajax({
+        url: $tempChart.data("url"),
+        success: function (data) {
+        lastValue = data.data[data.data.length - 1];
+        console.log(lastValue);
+        $SpoContainer.text(lastValue);
+        
+
+        if (lastValue >= 85) {
+            $AlertContainer.text("Safe");
+            $AlertColor.removeClass("bg-danger").addClass("bg-primary");
+        } else {
+            $AlertContainer.text("Danger: SpO2");
+            $AlertColor.removeClass("bg-primary").addClass("bg-danger");
+        }
+
+        var ctx = $tempChart[0].getContext("2d");
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'SpO2',
+                lineTension: 0.3,
+                backgroundColor: "rgba(2,117,216,0.2)",
+                borderColor: "rgba(2,117,216,1)",
+                pointRadius: 5,
+                pointBackgroundColor: "rgba(2,117,216,1)",
+                pointBorderColor: "rgba(255,255,255,0.8)",
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(2,117,216,1)",
+                pointHitRadius: 50,
+                pointBorderWidth: 2,
+                data: data.data
+            }]          
+            },
+            options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Patient\'s SpO2'
+            }
+            }
+        });
+        }
+    });
+    },8000);
+</script>
+{% endblock %}

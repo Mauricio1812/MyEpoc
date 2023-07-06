@@ -28,4 +28,5 @@ urlpatterns = [
     path('signup/', include('accounts.urls'), name='signup'),
     path("accounts/", include("django.contrib.auth.urls")),
     path('admin/', admin.site.urls),
+    path("", index, name="home"), #Cambiar a verdadero home
 ]
