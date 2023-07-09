@@ -13,7 +13,11 @@
 
         {{ form.as_p}}
 
-        <button class="mb-4 mt-6 inline-block py-2 px-6 bg-blue-600 text-white rounded-xl"> Save changes</a>
+        <button class="mb-2 mt-6 inline-block py-2 px-6 bg-blue-600 text-white rounded-xl"> Save changes</a></button>
     </form>
+
+
+    <a href="{% url 'delete_user' user.pk %}"class="mx-4 mt-2 inline-block py-2 px-6 bg-rose-600 text-white rounded-xl">Delete</a>
+
 
 {% endblock %}

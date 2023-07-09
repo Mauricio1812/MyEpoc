@@ -15,12 +15,15 @@ from epoc_app.serializers import Patient_serializer, Patient_serializer2, P_seri
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
-def command_serializer(request):
+from accounts.models import User
+
+
+def command_serializer(request, name):
     if request.method == 'GET':
-        instance = Patient.objects.order_by('-date')[0] #latest('date')
+        user =  User.objects.get(name=name)
+        patient =  Patient.objects.get(name=user)
         data = {
-            'name': instance.name,
-            'flow': instance.flow,
+            'flow': patient.flow,
         }
         serialized_data = json.dumps(data)  # Serialize the dictionary to JSON
         return HttpResponse(serialized_data, content_type='application/json')
@@ -38,13 +41,12 @@ def Spo2_serializer_agregar_data(request):
         serializer = Patient_serializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            name=data['name']
-            spo2=data['spo2']
-            patient, created = Patient.objects.get_or_create(
-                name=name, defaults={"name": name, "spo2": spo2, "flow": 0})
-            if created==False:
-                patient.spo2 = spo2
-                patient.save(update_fields=["spo2"]) 
+
+            user =  get_object_or_404(User, name=data['name'])
+            patient =  get_object_or_404(Patient, name=user)
+            patient.spo2 = data['spo2']
+            patient.save(update_fields=["spo2"]) 
+
             return JsonResponse(serializer.data, status=201)
 
         return JsonResponse(serializer.errors, status=400)
@@ -93,10 +95,7 @@ def details_pat(request,name):
     return render(request, 'pat_details.html', {'form': form, 'command': command_d, 'spo2': spo2_d, 'patient':patient})
 
 def welcome(request):
-
     return render(request, 'welcome.html')
-
-from accounts.models import User
 
 @login_required
 def admin(request):
@@ -132,7 +131,7 @@ def add_user(request):
                     patient = Patient(name=user, flow=0, spo2=90)
                     patient.save()
 
-                messages.success(request, ' Usuario agregado')
+                messages.success(request, 'User added')
 
                 return redirect('/epoc/admin/')  
         else:
@@ -142,7 +141,7 @@ def add_user(request):
             'form': form
         })
     else:
-        messages.error(request, 'No tiene permisos para agregar usuarios')
+        messages.error(request, 'You don\'t have permission to add users')
         return redirect('/epoc/admin/')
     
 @login_required
@@ -184,4 +183,15 @@ def edit_user(request, uuid):
        })
    else:
         messages.error(request, 'You don\'t have permission to edit users')
+        return redirect('/epoc/admin/')
+   
+@login_required
+def delete_user(request, uuid):
+    if request.user.has_perm('user.delete_user'):
+        user =  User.objects.get(pk=uuid)
+        user.delete()
+        messages.success(request, 'User deleted')
+        return redirect('/epoc/admin/')
+    else:
+        messages.error(request, 'You don\'t have permission to delete users')
         return redirect('/epoc/admin/')
