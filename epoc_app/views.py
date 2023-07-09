@@ -87,7 +87,7 @@ def temp_chart(request,patient_id):
 from django.contrib.auth.decorators import login_required
 
 @login_required
-def index(request):
+def monitor(request):
     patients=Patient.objects.all()
     if request.method == 'POST':
         form = CommandForm(request.POST)
@@ -106,7 +106,7 @@ def index(request):
 
     command_d = Patient.objects.last()
     spo2_d = P_info.objects.last()
-    return render(request, 'index.html', {'patients': patients})
+    return render(request, 'monitor.html', {'patients': patients})
 
 
 from django.shortcuts import get_object_or_404
@@ -134,3 +134,6 @@ def details_pat(request,patient_id):
     command_d = Patient.objects.filter(name=patient.name).last()
     spo2_d = P_info.objects.filter(name=patient.name).last()
     return render(request, 'pat_details.html', {'form': form, 'command': command_d, 'spo2': spo2_d, 'patient':patient})
+
+def welcome(request):
+    return render(request, 'welcome.html')
