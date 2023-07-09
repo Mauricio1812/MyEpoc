@@ -35,7 +35,7 @@
                         <td>{{ patient.spo2 }}</td>
                         <td>{{ patient.flow }}</td>
                         <td>
-                            <a href="{% url 'detail' patient.id %}" class="btn btn-primary btn-sm" role="button">Monitor</a>
+                            <a href="{% url 'detail' patient.name %}" class="btn btn-primary btn-sm" role="button">Monitor</a>
                         </td>
                     </tr>
                 {% endfor %}

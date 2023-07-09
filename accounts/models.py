@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=255, blank=True, default='')
+    name = models.CharField(max_length=255, unique=True, blank=True, default='')
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=PATIENT)
 
     is_active = models.BooleanField(default=True)
@@ -51,6 +51,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'name'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ['role']

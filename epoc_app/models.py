@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from accounts.models import User
     
 class Patient(models.Model):
-    name= models.TextField()
+    name=models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     spo2=models.FloatField()
     flow=models.FloatField()
     date=models.DateTimeField(auto_now=True)

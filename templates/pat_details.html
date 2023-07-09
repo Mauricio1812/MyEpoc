@@ -68,7 +68,7 @@
                 <div class="card-body">
                     <!-- <canvas id="myBarChart" width="100%" height="40"></canvas> -->
                     <!-- <h1>{{ user.groups.all.0 }}</h1> -->
-                    {% if user.groups.all.0.name == 'Medicos' %}
+                    {% if request.user.role == 'medic' %}
                     <form method="post">
                         {% csrf_token %}
                         {{ form.patient.label_tag }} {{ form.patient }}

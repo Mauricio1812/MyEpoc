@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from epoc_app.serializers import Patient_serializer, Patient_serializer2, P_serializer
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 def command_serializer(request):
     if request.method == 'GET':
@@ -69,45 +70,21 @@ def spo2_chart(request,patient_id):
 @login_required
 def monitor(request):
     patients=Patient.objects.all()
-    if request.method == 'POST':
-        form = CommandForm(request.POST)
-        if form.is_valid():
-            patient = form.cleaned_data['patient']
-            flow = form.cleaned_data['flow']
-            patient, created = Patient.objects.get_or_create(
-                name=patient, defaults={"name": patient, "spo2": 95, "flow": flow})
-            if created==False:
-                ahora= datetime.now()
-                patient.date=ahora
-                patient.flow = flow
-                patient.save(update_fields=["flow","date"]) 
-    else:
-        form = CommandForm()
-
-    command_d = Patient.objects.last()
-    spo2_d = P_info.objects.last()
     return render(request, 'monitor.html', {'patients': patients})
 
 
-from django.shortcuts import get_object_or_404
-
 @login_required
-def details_pat(request,patient_id):
-    
-    patient = get_object_or_404(Patient,pk=patient_id)
+def details_pat(request,name):
+    user =  User.objects.get(name=name)
+    patient =  Patient.objects.get(name=user)
 
     if request.method == 'POST':
-        form = CommandForm(request.POST)
+        form = CommandForm(request.POST, instance=patient)
+
         if form.is_valid():
-            patient = form.cleaned_data['patient']
-            flow = form.cleaned_data['flow']
-            patient, created = Patient.objects.get_or_create(
-                name=patient, defaults={"name": patient, "spo2": 95, "flow": flow})
-            if created==False:
-                ahora= datetime.now()
-                patient.date=ahora
-                patient.flow = flow
-                patient.save(update_fields=["flow","date"]) 
+            patient.date=datetime.now()
+            patient.save(update_fields=["date"]) 
+            form.save()
     else:
         form = CommandForm()
         
@@ -116,6 +93,7 @@ def details_pat(request,patient_id):
     return render(request, 'pat_details.html', {'form': form, 'command': command_d, 'spo2': spo2_d, 'patient':patient})
 
 def welcome(request):
+
     return render(request, 'welcome.html')
 
 from accounts.models import User
@@ -151,6 +129,8 @@ def add_user(request):
                 if user.role == User.PATIENT:
                     group = Group.objects.get(name='Patients')
                     group.user_set.add(user)
+                    patient = Patient(name=user, flow=0, spo2=90)
+                    patient.save()
 
                 messages.success(request, ' Usuario agregado')
 
@@ -181,12 +161,17 @@ def edit_user(request, uuid):
                     group.user_set.add(user)
                     group = Group.objects.get(name='Patients')
                     group.user_set.remove(user)
+                    patient = get_object_or_404(Patient, name=user)
+                    patient.delete()
+
 
                else:
                     group = Group.objects.get(name='Patients')
                     group.user_set.add(user)
                     group = Group.objects.get(name='Medics')
                     group.user_set.remove(user)
+                    patient, created = Patient.objects.get_or_create(
+                        name=user, defaults={"name": user, "spo2": 90, "flow": 0})
 
                messages.success(request,'The changes were saved')
                return redirect('/epoc/admin/')
