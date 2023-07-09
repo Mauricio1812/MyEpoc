@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.min.css' %}">
+<title>WETMOS - Edit user</title>
+{% endblock %}
+
+{% block content %}
+    <h1 class="px-4 mt-4 mb-6 text-4xl"> Edit user</h1>
+
+    <form method="post" action="." class="px-4">
+        {% csrf_token %}
+
+        {{ form.as_p}}
+
+        <button class="mb-4 mt-6 inline-block py-2 px-6 bg-blue-600 text-white rounded-xl"> Save changes</a>
+    </form>
+
+{% endblock %}

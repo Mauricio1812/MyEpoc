@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.utils import timezone
 from datetime import datetime
@@ -40,9 +40,7 @@ from epoc_app.serializers import Patient_serializer, Patient_serializer2, P_seri
 
 @csrf_exempt
 def Temp_serializer_agregar_data(request):
-    """
-    List all code snippets, or create a new snippet.
-    """
+
     if request.method == 'GET':
         snippets = P_info.objects.all()
         serializer = Patient_serializer2(snippets, many=True)
@@ -137,3 +135,86 @@ def details_pat(request,patient_id):
 
 def welcome(request):
     return render(request, 'welcome.html')
+
+from accounts.models import User
+
+@login_required
+def admin(request):
+    users = User.objects.filter(is_staff=True)
+
+    return render(request, 'admin.html', {
+        'users': users,
+    })
+
+from accounts.forms import AddUserForm, EditUserForm
+from django.contrib.auth.models import Group
+from django.contrib import messages
+
+@login_required
+def add_user(request):
+    if request.user.has_perm('user.add_user'):
+        if request.method == 'POST':
+            form = AddUserForm(request.POST)
+
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.is_staff = True
+                user.set_password(request.POST.get('password'))
+                user.save()
+
+                if user.role == User.MEDIC:
+                    group = Group.objects.get(name='Medics')
+                    group.user_set.add(user)
+
+                if user.role == User.PATIENT:
+                    group = Group.objects.get(name='Patients')
+                    group.user_set.add(user)
+
+                messages.success(request, ' Usuario agregado')
+
+                return redirect('/epoc/admin/')  
+        else:
+            form = AddUserForm()
+    
+        return render(request, 'add_user.html', {
+            'form': form
+        })
+    else:
+        messages.error(request, 'No tiene permisos para agregar usuarios')
+        return redirect('/epoc/admin/')
+    
+@login_required
+def edit_user(request, uuid):
+   if request.user.has_perm('user.edit_user'):
+       user =  User.objects.get(pk=uuid)
+
+       if request.method == 'POST':
+           form = EditUserForm(request.POST, instance=user)
+
+           if form.is_valid():
+               form.save()
+               
+               if user.role == User.MEDIC:
+                    group = Group.objects.get(name='Medics')
+                    group.user_set.add(user)
+                    group = Group.objects.get(name='Patients')
+                    group.user_set.remove(user)
+
+               else:
+                    group = Group.objects.get(name='Patients')
+                    group.user_set.add(user)
+                    group = Group.objects.get(name='Medics')
+                    group.user_set.remove(user)
+
+               messages.success(request,'The changes were saved')
+               return redirect('/epoc/admin/')
+       else:
+           form=EditUserForm(instance=user)
+
+       return render(request, 'edit_user.html', {
+           'user': user,
+           'form': form
+       })
+   else:
+        messages.error(request, 'You don\'t have permission to edit users')
+        return redirect('/epoc/admin/')
