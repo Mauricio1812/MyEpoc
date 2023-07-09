@@ -53,7 +53,7 @@
                     SpO2 through the day
                 </div>
                 <div class="card-body">
-                    <canvas id="temp-chart" data-url="{% url 'temp-chart' patient.id%}"></canvas>
+                    <canvas id="spo2-chart" data-url="{% url 'spo2-chart' patient.id%}"></canvas>
                 </div>
             </div>
         </div>
@@ -99,13 +99,13 @@
 <script>  
     var interval = setInterval(function () {
     var lastValue;
-    var $tempChart = $("#temp-chart");
+    var $SpoChart = $("#spo2-chart");
     var $SpoContainer = $("#spo-container");
     var $AlertContainer = $("#alert-container");
     var $AlertColor = $("#alert-color");
     
     $.ajax({
-        url: $tempChart.data("url"),
+        url: $SpoChart.data("url"),
         success: function (data) {
         lastValue = data.data[data.data.length - 1];
         console.log(lastValue);
@@ -120,7 +120,7 @@
             $AlertColor.removeClass("bg-primary").addClass("bg-danger");
         }
 
-        var ctx = $tempChart[0].getContext("2d");
+        var ctx = $SpoChart[0].getContext("2d");
         new Chart(ctx, {
             type: 'line',
             data: {

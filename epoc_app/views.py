@@ -8,6 +8,12 @@ from epoc_app.models import P_info, Patient
 from .forms import CommandForm
 import json
 
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+from epoc_app.serializers import Patient_serializer, Patient_serializer2, P_serializer
+from django.contrib.auth.decorators import login_required
+
 def command_serializer(request):
     if request.method == 'GET':
         instance = Patient.objects.order_by('-date')[0] #latest('date')
@@ -18,28 +24,8 @@ def command_serializer(request):
         serialized_data = json.dumps(data)  # Serialize the dictionary to JSON
         return HttpResponse(serialized_data, content_type='application/json')
 
-# This class will create the table just like how we create forms
-class SimpleTable(tables.Table):
-   class Meta:
-      model = P_info
-      template_name = "django_tables2/semantic.html"
-
-# This will render table
-class TableView(tables.SingleTableView):
-   table_class = SimpleTable
-   queryset = P_info.objects.all()
-   template_name = "Patient_table.html"
-
-################################FUNCIONA
-
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-from epoc_app.serializers import Patient_serializer, Patient_serializer2, P_serializer
-
-
 @csrf_exempt
-def Temp_serializer_agregar_data(request):
+def Spo2_serializer_agregar_data(request):
 
     if request.method == 'GET':
         snippets = P_info.objects.all()
@@ -61,10 +47,8 @@ def Temp_serializer_agregar_data(request):
             return JsonResponse(serializer.data, status=201)
 
         return JsonResponse(serializer.errors, status=400)
-    
-##################################################################
 
-def temp_chart(request,patient_id):
+def spo2_chart(request,patient_id):
     labels = []
     data = []
     patient = get_object_or_404(Patient,pk=patient_id)
@@ -81,8 +65,6 @@ def temp_chart(request,patient_id):
         'labels': labels,
         'data': data,
     })
-
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def monitor(request):
