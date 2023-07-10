@@ -58,8 +58,19 @@
             <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec accumsan tortor at sem fermentum tempor.</p> 
         </div>
     </div>
+    {% if request.user.is_authenticated %}
+        {% if request.user.role == 'patient'%}
+            {% include 'partials/chat_bubble.html'%}
+        {% endif %}
+    {% endif %}
+    
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/main.js' %}"></script>
+{% if request.user.is_authenticated %}
+{% if request.user.role == 'patient'%}
+{{ request.user.name|json_script:'user_name' }}
+<script src="{% static 'js/main.js' %}"></script>
+{% endif %}
+{% endif %}
 {% endblock %}

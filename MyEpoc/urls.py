@@ -25,6 +25,7 @@ admin.site.index_title = "Bienvenido al sistema de registro de SPO2 "
 
 urlpatterns = [
     path('epoc/', include('epoc_app.urls')),
+    path('chat/', include('chat.urls')),
     path('login/', include('accounts.urls'), name='login'),
     path("accounts/", include("django.contrib.auth.urls")),
     path('admin/', admin.site.urls),

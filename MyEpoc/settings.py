@@ -29,9 +29,17 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'accounts.User'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
+
+
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +49,8 @@ INSTALLED_APPS = [
     'epoc_app',
     "django_tables2",
     "rest_framework",
-    "accounts"
+    "accounts",
+    "chat"
 ]
 
 MIDDLEWARE = [
@@ -73,6 +82,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MyEpoc.wsgi.application'
+ASGI_APPLICATION = 'MyEpoc.asgi.application'
 
 
 # Database

@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
 from accounts.models import User
+from chat.models import Room
 
 
 def command_serializer(request, name):
@@ -100,9 +101,11 @@ def welcome(request):
 @login_required
 def admin(request):
     users = User.objects.filter(is_staff=True)
+    rooms = Room.objects.all()
 
     return render(request, 'admin.html', {
         'users': users,
+        'rooms': rooms,
     })
 
 from accounts.forms import AddUserForm, EditUserForm
