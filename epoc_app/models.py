@@ -11,9 +11,10 @@ class Patient(models.Model):
     def __str__(self):
         return '%s: %s - %s' %(self.name, self.spo2, self.flow,)
     
-class P_info(models.Model): #receive 'patient' information
+class P_info(models.Model): #receive 'patient' information (SPO2)
     name=models.TextField()
     spo2=models.FloatField()
+    flow_real=models.FloatField(default=0)
     date=models.DateTimeField(auto_now=True)
 
     class Meta:

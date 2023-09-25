@@ -46,29 +46,33 @@
         </div>
     </div>
     <div class="row">
+        {% if request.user.role == 'medic' %}
         <div class="col-xl-6">
+        {%else%}
+        <div class="col-xl-12">
+        {% endif %}
             <div class="card mb-4">
-                <div class="card-header">
+                <div id="spo2_tab" class="card-header">
                     <i class="fas fa-chart-area me-1"></i>
-                    SpO2 through the day
+                    Patient's history 
                 </div>
                 <div class="card-body">
-                    <canvas id="spo2-chart" data-url="{% url 'spo2-chart' patient.id%}"></canvas>
+                    <canvas id="chart_SPO2" data-url="{% url 'spo2-chart' patient.id%}"></canvas>
+                </div>
+                <div class="card-body">
+                    <canvas id="chart_FLOW" data-url="{% url 'spo2-chart' patient.id%}"></canvas>
                 </div>
             </div>
         </div>
-
-
+        
+        {% if request.user.role == 'medic' %}
         <div class="col-xl-6">
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-bar me-1"></i>
-                    Control oxygen flow
+                    Control Flow
                 </div>
                 <div class="card-body">
-                    <!-- <canvas id="myBarChart" width="100%" height="40"></canvas> -->
-                    <!-- <h1>{{ user.groups.all.0 }}</h1> -->
-                    {% if request.user.role == 'medic' %}
                     <form method="post">
                         {% csrf_token %}
                         {{ form.patient.label_tag }} {{ form.patient }}
@@ -80,14 +84,10 @@
                         <p></p>
                         <button type="submit">Submit</button>
                     </form>
-                    {% else %}
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Restricted access</li>
-                    </ol>
-                    {% endif %}
                 </div>
             </div>
-        </div>
+        </div> 
+        {% endif %}
     </div>
 </div>  
 {% endblock %}
@@ -99,7 +99,8 @@
 <script>  
     var interval = setInterval(function () {
     var lastValue;
-    var $SpoChart = $("#spo2-chart");
+    var $SpoChart = $("#chart_SPO2");
+    var $FlowChart = $("#chart_FLOW");
     var $SpoContainer = $("#spo-container");
     var $AlertContainer = $("#alert-container");
     var $AlertColor = $("#alert-color");
@@ -151,8 +152,40 @@
             }
             }
         });
+
+        var flow_ctx = $FlowChart[0].getContext("2d");
+        new Chart(flow_ctx, {
+            type: 'line',
+            data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Flow',
+                lineTension: 0.3,
+                backgroundColor: "rgba(31,120,50,0.2)",
+                borderColor: "rgba(31,120,50,1)",
+                pointRadius: 5,
+                pointBackgroundColor: "rgba(31,120,50,1)",
+                pointBorderColor: "rgba(255,255,255,0.8)",
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(2,117,216,1)",
+                pointHitRadius: 50,
+                pointBorderWidth: 2,
+                data: data.flow
+            }]          
+            },
+            options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Valve\'s flow'
+            }
+            }
+        });
         }
     });
-    },8000);
+    },4000);
 </script>
 {% endblock %}

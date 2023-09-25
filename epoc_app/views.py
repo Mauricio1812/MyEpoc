@@ -55,19 +55,23 @@ def Spo2_serializer_agregar_data(request):
 def spo2_chart(request,patient_id):
     labels = []
     data = []
+    flow = []
     patient = get_object_or_404(Patient,pk=patient_id)
     queryset = P_info.objects.filter(name=patient.name).order_by('-date') #[:30]
+    flow_query = P_info.objects.filter(name=patient.name).order_by('-date')
     if(len(queryset)>30):
         queryset=queryset[:30]
-    else:
-        queryset=queryset[:len(queryset)]
+        flow_query=flow_query[:30]
+
     for entry in reversed(queryset):
         labels.append(str(entry.date.strftime("%m-%d %H:%M")))
         data.append(entry.spo2)
+        flow.append(entry.flow_real)
     
     return JsonResponse(data={
         'labels': labels,
         'data': data,
+        'flow': flow
     })
 
 @login_required
