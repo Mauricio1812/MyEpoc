@@ -21,7 +21,7 @@ class P_info(models.Model): #receive 'patient' information (SPO2)
         ordering = ["pk"]
 
     def __str__(self):
-        return '%s: %s ' %(self.name, self.spo2, )
+        return f"{self.name}: {self.spo2} ({self.date:%H:%M:%S %B %d, %Y})"
 
 class P_command(models.Model): #send commands to epoc device
     name=models.TextField()

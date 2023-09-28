@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     "django_tables2",
     "rest_framework",
     "accounts",
-    "chat"
+    "chat",
+    'import_export',
 ]
 
 MIDDLEWARE = [

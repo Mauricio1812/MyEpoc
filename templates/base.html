@@ -60,8 +60,12 @@
                                 Monitor patients
                             </a>
                             <a class="nav-link" href="{% url 'admin' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-gears"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-circle-user"></i></div>
                                 Chats and users
+                            </a>
+                            <a class="nav-link" href="{% url 'admin:index' %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-gears"></i></div>
+                                Admin
                             </a>
                             {% endif %}
                         </div>
