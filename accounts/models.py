@@ -3,7 +3,8 @@ import uuid
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.db import models
 from django.utils import timezone
-
+from secret_settings import *
+from encrypted_fields.fields import EncryptedEmailField
 
 class CustomUserManager(UserManager):
     def _create_user(self, name, email, password, **extra_fields):
@@ -11,7 +12,7 @@ class CustomUserManager(UserManager):
             raise ValueError("You have not provided a valid e-mail address")
         
         email = self.normalize_email(email)
-        user = self.model(email=email, name=name, **extra_fields)
+        user = self.model(name=name, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
 
@@ -38,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField(unique=True)
+    email = EncryptedEmailField(max_length=256)
     name = models.CharField(max_length=255, unique=True, blank=True, default='')
     role = models.CharField(max_length=20, choices=ROLES_CHOICES, default=PATIENT)
 
