@@ -2,8 +2,6 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.utils import timezone
 from datetime import datetime
-from django.db.models import Avg, Max, Min, Count
-import django_tables2 as tables
 from epoc_app.models import P_info, Patient
 from .forms import CommandForm
 import json
@@ -11,7 +9,7 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from epoc_app.serializers import Patient_serializer, Patient_serializer2, P_serializer
+from epoc_app.serializers import Patient_serializer, Patient_serializer2
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
@@ -43,10 +41,26 @@ def Spo2_serializer_agregar_data(request):
         if serializer.is_valid():
             serializer.save()
 
+            #Delete P_info if there are more than 500 entries
+            p_info_count = P_info.objects.count()
+            if p_info_count > 800:
+                for patient in Patient.objects.all():
+                    if P_info.objects.filter(name=patient.name).count() > 30:
+                        P_info.objects.filter(name=patient.name).order_by('date')[:-5].delete()
+
+            #Update patient's spo2 and flow
             user =  get_object_or_404(User, name=data['name'])
             patient =  get_object_or_404(Patient, name=user)
             patient.spo2 = data['spo2']
-            patient.save(update_fields=["spo2"]) 
+            patient.flow = data['flow_real']
+            patient.save(update_fields=["spo2", "flow_real"]) 
+
+            # if(data['flow_real']>85):
+            #     subject = "WETMOS - Alerta de paciente"
+            #     recipient_list = user.email
+            #     context = {'p_name': user.name,
+            #                 'p_spo2': patient.spo2,
+            #                 'p_flow': patient.flow}             
 
             return JsonResponse(serializer.data, status=201)
 
